@@ -20,4 +20,19 @@ describe "Application 'woody'" do
     puts "Count after two deserialization is #{Item.all.count}"
     Item.all.count.should == first_count + 1
   end
+
+  it "should handle relations" do
+    Item.deserialize_from_file('items.dat')
+    Apple.deserialize_from_file('apples.dat')
+    Item.destroy_all
+    Apple.destroy_all
+    Item.new(name:'item').save
+    first_apple = Apple.new
+    second_apple = Apple.new
+    Item.all.first.apples << first_apple
+    Item.all.first.apples << second_apple
+    Item.all.first.apples.all.count.should == 2
+    Item.all.first.apples_count.should == 2
+  end
+
 end
